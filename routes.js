@@ -11,14 +11,22 @@ module.exports = function (app, db) {
           res.render(process.cwd() + '/views/pug/index.pug', {
             title: 'Hello', 
             message: 'Please login',
-            showRegistration: true
+            showRegistration: true,
+            showLogin: true
           });
         });
   
   app.route('/profile')
   .get(ensureAuthenticated, (req,res) => {
-       res.render(process.cwd() + '/views/pug/profile');
+       res.render(process.cwd() + '/views/pug/profile', {
+         username: req.user.username
+       });
   });
+  
+  app.route('/login')
+    .post(passport.authenticate('local', { failureRedirect: '/' }),(req,res) => {
+         res.redirect('/profile');
+    });
   
   app.route('/logout')
   .get((req, res) => {
